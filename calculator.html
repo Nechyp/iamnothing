@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>Калькулятор с Историей</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,6 +46,22 @@
         button:hover {
             background-color: #ddd;
         }
+        .history-container {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .history-item {
+            margin: 5px 0;
+            font-size: 1em;
+            background-color: #e6e6e6;
+            padding: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -72,39 +88,81 @@
         <button onclick="appendNumber(0)">0</button>
         <button onclick="calculateResult()">=</button>
         <button onclick="appendOperator('/')">/</button>
+        
+        <button onclick="showHistory()">History</button>
+    </div>
+
+    <!-- History Container -->
+    <div class="history-container" id="historyContainer">
+        <!-- History items will be displayed here -->
     </div>
 </div>
 
 <script>
     let displayValue = '';
+    let history = [];
 
+    // Handle number input from buttons and keyboard
     function appendNumber(number) {
         displayValue += number;
         updateDisplay();
     }
 
+    // Handle operator input from buttons and keyboard
     function appendOperator(operator) {
         displayValue += ` ${operator} `;
         updateDisplay();
     }
 
+    // Clear the display
     function clearDisplay() {
         displayValue = '';
         updateDisplay();
     }
 
+    // Calculate the result
     function calculateResult() {
         try {
-            displayValue = eval(displayValue).toString();
+            let result = eval(displayValue).toString();
+            history.push(`${displayValue} = ${result}`);
+            displayValue = result;
         } catch {
             displayValue = 'Ошибка';
         }
         updateDisplay();
     }
 
+    // Update the display on the screen
     function updateDisplay() {
         document.getElementById('display').value = displayValue;
     }
+
+    // Show calculation history
+    function showHistory() {
+        const historyContainer = document.getElementById('historyContainer');
+        historyContainer.innerHTML = ''; // Clear current history
+
+        // Display each history item
+        history.forEach(item => {
+            const historyItem = document.createElement('div');
+            historyItem.classList.add('history-item');
+            historyItem.textContent = item;
+            historyContainer.appendChild(historyItem);
+        });
+    }
+
+    // Listen for keyboard events
+    window.addEventListener('keydown', (event) => {
+        if (event.key >= '0' && event.key <= '9') { // Numbers 0-9
+            appendNumber(event.key);
+        } else if (event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/') {
+            appendOperator(event.key);
+        } else if (event.key === 'Enter') { // Equal sign (Enter)
+            calculateResult();
+        } else if (event.key === 'c' || event.key === 'C') { // Clear (C)
+            clearDisplay();
+        }
+    });
 </script>
 
 </body>
