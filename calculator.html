@@ -1,187 +1,191 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор</title>
+    <title>Modern Calculator</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f7f7f7;
-            margin: 0;
+            background-color: #f4f7f9;
         }
 
         .calculator {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: repeat(4, 1fr);
+            width: 300px;
+            max-width: 100%;
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 100%;
-            max-width: 300px; /* Максимальная ширина калькулятора */
-            box-sizing: border-box;
         }
 
-        .display {
-            width: 100%;
-            height: 50px;
-            background-color: #222;
+        .calculator-screen {
+            grid-column: span 4;
+            background-color: #2e2e2e;
             color: #fff;
-            font-size: 2em;
-            text-align: right;
+            font-size: 2.5em;
             padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            text-align: right;
+            border-radius: 8px;
             overflow: hidden;
             white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .button {
-            background-color: #f0f0f0;
-            padding: 20px;
+        .calculator-button {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
             font-size: 1.5em;
-            border: none;
-            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
             cursor: pointer;
             transition: background-color 0.3s;
+            border-radius: 8px;
         }
 
-        .button:hover {
+        .calculator-button:active {
             background-color: #ddd;
         }
 
-        .button:active {
-            background-color: #bbb;
-        }
-
-        .button.operator {
-            background-color: #f0a500;
+        .calculator-button.operator {
+            background-color: #ff8c00;
             color: white;
         }
 
-        .button.operator:hover {
-            background-color: #f08a00;
+        .calculator-button.operator:active {
+            background-color: #e07a00;
         }
 
-        .button.clear {
-            background-color: #ff6666;
+        .calculator-button.equal {
+            background-color: #28a745;
             color: white;
+            grid-column: span 2;
         }
 
-        .button.clear:hover {
-            background-color: #ff4d4d;
+        .calculator-button.equal:active {
+            background-color: #218838;
         }
 
-        .button.equal {
-            background-color: #4CAF50;
+        .calculator-button.clear {
+            background-color: #dc3545;
             color: white;
-            grid-column: span 4; /* кнопка "=" растягивается на всю ширину */
+            grid-column: span 2;
         }
 
-        .button.equal:hover {
-            background-color: #45a049;
+        .calculator-button.clear:active {
+            background-color: #c82333;
         }
 
-        /* Адаптивность для мобильных устройств */
-        @media screen and (max-width: 480px) {
-            .display {
-                font-size: 1.5em;
-            }
-
-            .button {
-                padding: 15px;
-                font-size: 1.2em;
-            }
-
-            .button.equal {
-                grid-column: span 4; /* кнопка "=" растягивается на всю ширину */
+        @media screen and (max-width: 500px) {
+            .calculator {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-
-<div class="calculator">
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-        <button class="button clear" onclick="clearDisplay()">C</button>
-        <button class="button operator" onclick="appendCharacter('/')">/</button>
-        <button class="button operator" onclick="appendCharacter('*')">*</button>
-        <button class="button operator" onclick="appendCharacter('-')">-</button>
-
-        <button class="button" onclick="appendCharacter('7')">7</button>
-        <button class="button" onclick="appendCharacter('8')">8</button>
-        <button class="button" onclick="appendCharacter('9')">9</button>
-        <button class="button operator" onclick="appendCharacter('+')">+</button>
-
-        <button class="button" onclick="appendCharacter('4')">4</button>
-        <button class="button" onclick="appendCharacter('5')">5</button>
-        <button class="button" onclick="appendCharacter('6')">6</button>
-        <button class="button equal" onclick="calculateResult()">=</button>
-
-        <button class="button" onclick="appendCharacter('1')">1</button>
-        <button class="button" onclick="appendCharacter('2')">2</button>
-        <button class="button" onclick="appendCharacter('3')">3</button>
-        <button class="button" onclick="appendCharacter('0')">0</button>
-
-        <button class="button" onclick="appendCharacter('.')">.</button>
-        <button class="button backspace" onclick="backspace()">←</button>
+    <div class="calculator">
+        <div id="display" class="calculator-screen">0</div>
+        <button class="calculator-button clear">AC</button>
+        <button class="calculator-button operator">/</button>
+        <button class="calculator-button operator">*</button>
+        <button class="calculator-button operator">-</button>
+        <button class="calculator-button">7</button>
+        <button class="calculator-button">8</button>
+        <button class="calculator-button">9</button>
+        <button class="calculator-button operator">+</button>
+        <button class="calculator-button">4</button>
+        <button class="calculator-button">5</button>
+        <button class="calculator-button">6</button>
+        <button class="calculator-button">1</button>
+        <button class="calculator-button">2</button>
+        <button class="calculator-button">3</button>
+        <button class="calculator-button equal">=</button>
+        <button class="calculator-button">0</button>
+        <button class="calculator-button">.</button>
     </div>
-</div>
 
-<script>
-    let display = document.getElementById("display");
+    <script>
+        let display = document.getElementById("display");
+        let currentInput = '';
+        let previousInput = '';
+        let operator = '';
+        let result = null;
 
-    function appendCharacter(character) {
-        if (display.innerText === "0" && character !== ".") {
-            display.innerText = character;
-        } else {
-            display.innerText += character;
+        function updateDisplay(value) {
+            display.textContent = value.length > 10 ? value.substring(0, 10) : value;
         }
-    }
 
-    function clearDisplay() {
-        display.innerText = "0";
-    }
-
-    function backspace() {
-        if (display.innerText.length === 1 || (display.innerText === "0")) {
-            display.innerText = "0";
-        } else {
-            display.innerText = display.innerText.slice(0, -1);
+        function clearDisplay() {
+            currentInput = '';
+            previousInput = '';
+            operator = '';
+            updateDisplay('0');
         }
-    }
 
-    function calculateResult() {
-        try {
-            display.innerText = eval(display.innerText);
-        } catch (e) {
-            display.innerText = "Error";
+        function handleNumberClick(value) {
+            currentInput += value;
+            updateDisplay(currentInput);
         }
-    }
 
-    // Обработка нажатий клавиш на клавиатуре
-    document.addEventListener('keydown', function(event) {
-        if (event.key >= '0' && event.key <= '9' || event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/' || event.key === '.') {
-            appendCharacter(event.key);
-        } else if (event.key === 'Enter') {
-            calculateResult();
-        } else if (event.key === 'Backspace') {
-            backspace();
-        } else if (event.key === 'c' || event.key === 'C') {
-            clearDisplay();
+        function handleOperatorClick(op) {
+            if (currentInput === '') return;
+            if (previousInput !== '') {
+                calculate();
+            }
+            operator = op;
+            previousInput = currentInput;
+            currentInput = '';
         }
-    });
-</script>
 
+        function handleEqualClick() {
+            if (currentInput === '' || previousInput === '') return;
+            calculate();
+        }
+
+        function calculate() {
+            if (operator === '+') {
+                result = parseFloat(previousInput) + parseFloat(currentInput);
+            } else if (operator === '-') {
+                result = parseFloat(previousInput) - parseFloat(currentInput);
+            } else if (operator === '*') {
+                result = parseFloat(previousInput) * parseFloat(currentInput);
+            } else if (operator === '/') {
+                result = parseFloat(previousInput) / parseFloat(currentInput);
+            }
+
+            updateDisplay(result.toString());
+            currentInput = result.toString();
+            previousInput = '';
+            operator = '';
+        }
+
+        document.querySelectorAll('.calculator-button').forEach(button => {
+            button.addEventListener('click', function () {
+                if (button.textContent === 'AC') {
+                    clearDisplay();
+                } else if ('0123456789.'.includes(button.textContent)) {
+                    handleNumberClick(button.textContent);
+                } else if ('/*-+'.includes(button.textContent)) {
+                    handleOperatorClick(button.textContent);
+                } else if (button.textContent === '=') {
+                    handleEqualClick();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
