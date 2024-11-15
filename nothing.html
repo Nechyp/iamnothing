@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>I Am Nothing</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>I Am Nothing</h1>
+    <p>Покупка элитного "ничто". Оплата производится через систему звезд Telegram.</p>
+    <button id="buyNothingButton">Купить Ничто</button>
+
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        // Информация о боте и провайдере платежей
+        const botToken = 'ВАШ_ТОКЕН_БОТА'; // Замените вашим токеном бота
+        const providerToken = 'ТОКЕН_ПРОВАЙДЕРА_ПЛАТЕЖЕЙ'; // Токен вашего платежного провайдера
+
+        // Обработчик кнопки для покупки
+        document.getElementById("buyNothingButton").onclick = function() {
+            // Функция для отправки инвойса пользователю
+            sendInvoice();
+        };
+
+        function sendInvoice() {
+            const chatId = tg.initDataUnsafe.user.id; // Получаем ID пользователя
+            const invoicePayload = {
+                chat_id: chatId,
+                title: "I Am Nothing",
+                description: "Покупка доступа к элитному ничто",
+                payload: "unique_payload_id",
+                provider_token: providerToken,
+                currency: "Stars", // Используем валюту Stars
+                prices: [{ label: "Элитное Ничто", amount: 1000 }] // Сумма в звездах (указать нужное значение)
+            };
+
+            // Отправляем инвойс через Telegram Bot API
+            fetch(`https://api.telegram.org/bot${botToken}/sendInvoice`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(invoicePayload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log("Инвойс успешно отправлен: ", data.result);
+                    tg.showAlert("Инвойс отправлен! Проверьте вашу оплату.");
+                } else {
+                    console.error("Ошибка при отправке инвойса: ", data.description);
+                    tg.showAlert("Произошла ошибка при отправке инвойса.");
+                }
+            })
+            .catch(error => console.error("Ошибка: ", error));
+        }
+    </script>
+</body>
+</html>
