@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор</title>
+    <title>Калькулятор с котиком</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,12 +13,14 @@
             height: 100vh;
             background-color: #f4f4f4;
             margin: 0;
+            flex-direction: column;
         }
         .calculator {
             border: 2px solid #333;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
+            position: relative;
         }
         .display {
             width: 260px;
@@ -46,11 +48,25 @@
         button:hover {
             background-color: #ddd;
         }
+        .cat {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            font-size: 24px;
+            white-space: nowrap;
+            animation: moveCat 3s linear infinite;
+        }
+        @keyframes moveCat {
+            0% { left: -50px; }
+            50% { left: 50%; transform: translateX(-50%); }
+            100% { left: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="calculator">
+    <div class="cat">=^.^=</div>
     <input type="text" id="display" class="display" disabled>
     <div class="buttons">
         <button onclick="appendNumber(7)">7</button>
@@ -80,12 +96,18 @@
 
     // Handle number input from buttons and keyboard
     function appendNumber(number) {
+        if (displayValue === 'Ошибка') {  // Если была ошибка, начинаем новый расчет
+            displayValue = '';
+        }
         displayValue += number;
         updateDisplay();
     }
 
     // Handle operator input from buttons and keyboard
     function appendOperator(operator) {
+        if (displayValue === 'Ошибка') {  // Если была ошибка, начинаем новый расчет
+            displayValue = '';
+        }
         displayValue += ` ${operator} `;
         updateDisplay();
     }
@@ -102,7 +124,7 @@
             let result = eval(displayValue).toString();
             displayValue = result;
         } catch {
-            displayValue = 'Ошибка';
+            displayValue = 'Ошибка';  // Если ошибка, выводим "Ошибка"
         }
         updateDisplay();
     }
