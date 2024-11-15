@@ -100,7 +100,8 @@
 
     const appendOperator = (operator) => {
         if (displayValue === 'Ошибка') displayValue = '';
-        if (displayValue.slice(-1).match(/[+\-*/]/)) return; // Prevent multiple operators
+        // Prevent multiple consecutive operators
+        if (displayValue.slice(-1).match(/[+\-*/]/)) return;
         displayValue += ` ${operator} `;
         updateDisplay();
     };
@@ -112,6 +113,13 @@
 
     const calculateResult = () => {
         try {
+            // Remove any unnecessary spaces and ensure valid input
+            displayValue = displayValue.replace(/\s+/g, ' ').trim();
+            // Check for any invalid expressions
+            if (displayValue.match(/[^0-9+\-*/(). ]/)) {
+                throw new Error("Invalid character");
+            }
+            // Perform calculation safely
             displayValue = eval(displayValue).toString();
         } catch {
             displayValue = 'Ошибка';
