@@ -1,153 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimized Calculator</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(145deg, #f06, #48c6ef);
-            font-family: Arial, sans-serif;
-        }
-        .calculator {
-            background: #333;
-            border-radius: 15px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-        }
-        #display {
-            width: 260px;
-            height: 60px;
-            background: #222;
-            color: #fff;
-            font-size: 2em;
-            text-align: right;
-            border: none;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-        button {
-            background: #444;
-            color: white;
-            font-size: 1.5em;
-            border: none;
-            padding: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover { background: #666; }
-        button:active { background: #888; }
-        .clear { background: #f44; }
-        .equal { background: #28a745; }
-        .operator { background: #f0ad4e; }
-        .number { background: #007bff; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traditional Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    .calculator {
+      background-color: #2e2e2e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    .display {
+      width: 240px;
+      height: 50px;
+      text-align: right;
+      font-size: 2em;
+      padding: 10px;
+      margin-bottom: 20px;
+      background-color: #222;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .button {
+      padding: 20px;
+      font-size: 1.5em;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #ccc;
+    }
+    .button:active {
+      background-color: #aaa;
+    }
+    .clear {
+      background-color: #ff4d4d;
+      color: white;
+    }
+    .equals {
+      background-color: #4caf50;
+      color: white;
+    }
+    .operator {
+      background-color: #f79c42;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
-<div class="calculator">
-    <input type="text" id="display" disabled>
+  <div class="calculator">
+    <input type="text" class="display" id="display" disabled />
     <div class="buttons">
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button class="operator" onclick="appendOperator('/')">/</button>
-        <button class="operator" onclick="appendOperator('*')">*</button>
-        <button class="operator" onclick="appendOperator('-')">-</button>
-
-        <button class="number" onclick="appendNumber(7)">7</button>
-        <button class="number" onclick="appendNumber(8)">8</button>
-        <button class="number" onclick="appendNumber(9)">9</button>
-        <button class="operator" onclick="appendOperator('+')">+</button>
-
-        <button class="number" onclick="appendNumber(4)">4</button>
-        <button class="number" onclick="appendNumber(5)">5</button>
-        <button class="number" onclick="appendNumber(6)">6</button>
-        <button class="equal" onclick="calculateResult()">=</button>
-
-        <button class="number" onclick="appendNumber(1)">1</button>
-        <button class="number" onclick="appendNumber(2)">2</button>
-        <button class="number" onclick="appendNumber(3)">3</button>
-        <button class="number" onclick="appendNumber(0)">0</button>
-
-        <button class="operator" onclick="appendDot()">.</button>
-        <button class="operator" onclick="backspace()">←</button>
+      <button class="button clear" onclick="clearDisplay()">C</button>
+      <button class="button" onclick="appendToDisplay('7')">7</button>
+      <button class="button" onclick="appendToDisplay('8')">8</button>
+      <button class="button" onclick="appendToDisplay('9')">9</button>
+      <button class="button operator" onclick="appendToDisplay('/')">/</button>
+      <button class="button" onclick="appendToDisplay('4')">4</button>
+      <button class="button" onclick="appendToDisplay('5')">5</button>
+      <button class="button" onclick="appendToDisplay('6')">6</button>
+      <button class="button operator" onclick="appendToDisplay('*')">*</button>
+      <button class="button" onclick="appendToDisplay('1')">1</button>
+      <button class="button" onclick="appendToDisplay('2')">2</button>
+      <button class="button" onclick="appendToDisplay('3')">3</button>
+      <button class="button operator" onclick="appendToDisplay('-')">-</button>
+      <button class="button" onclick="appendToDisplay('0')">0</button>
+      <button class="button" onclick="appendToDisplay('.')">.</button>
+      <button class="button equals" onclick="calculate()">=</button>
+      <button class="button operator" onclick="appendToDisplay('+')">+</button>
     </div>
-</div>
+  </div>
 
-<script>
-    let displayValue = '';
+  <script>
+    const maxLength = 16; // Maximum number of characters in the display
+    const display = document.getElementById('display');
 
-    const updateDisplay = () => {
-        document.getElementById('display').value = displayValue;
-    };
+    function appendToDisplay(value) {
+      // Append to display only if within maxLength
+      if (display.value.length < maxLength) {
+        display.value += value;
+      }
+    }
 
-    const appendNumber = (num) => {
-        if (displayValue === 'Ошибка') displayValue = '';
-        displayValue += num;
-        updateDisplay();
-    };
+    function clearDisplay() {
+      display.value = '';
+    }
 
-    const appendOperator = (operator) => {
-        if (displayValue === 'Ошибка') displayValue = '';
-        // Prevent multiple consecutive operators
-        if (displayValue.slice(-1).match(/[+\-*/]/)) return;
-        displayValue += ` ${operator} `;
-        updateDisplay();
-    };
-
-    const clearDisplay = () => {
-        displayValue = '';
-        updateDisplay();
-    };
-
-    const calculateResult = () => {
-        try {
-            // Remove any unnecessary spaces and ensure valid input
-            displayValue = displayValue.replace(/\s+/g, ' ').trim();
-            // Check for any invalid expressions
-            if (displayValue.match(/[^0-9+\-*/(). ]/)) {
-                throw new Error("Invalid character");
-            }
-            // Perform calculation safely
-            displayValue = eval(displayValue).toString();
-        } catch {
-            displayValue = 'Ошибка';
-        }
-        updateDisplay();
-    };
-
-    const appendDot = () => {
-        if (!displayValue.includes('.')) {
-            displayValue += '.';
-            updateDisplay();
-        }
-    };
-
-    const backspace = () => {
-        displayValue = displayValue.slice(0, -1);
-        updateDisplay();
-    };
-
-    window.addEventListener('keydown', (e) => {
-        const numKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        if (numKeys.includes(e.key)) appendNumber(e.key);
-        else if (['+', '-', '*', '/'].includes(e.key)) appendOperator(e.key);
-        else if (e.key === 'Enter') calculateResult();
-        else if (e.key === 'Backspace') backspace();
-        else if (e.key === 'c' || e.key === 'C') clearDisplay();
-    });
-</script>
+    function calculate() {
+      try {
+        // Evaluate the expression in the display
+        display.value = eval(display.value);
+      } catch (e) {
+        // If there's an error, reset the display
+        display.value = 'Error';
+        setTimeout(clearDisplay, 1500); // Clear after 1.5 seconds
+      }
+    }
+  </script>
 
 </body>
 </html>
