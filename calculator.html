@@ -5,166 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор</title>
     <style>
+        /* Общие стили */
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f7f7f7;
             margin: 0;
+            background-color: #f4f4f4;
         }
 
         .calculator {
+            width: 100%;
+            max-width: 400px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 260px;
         }
 
+        /* Экран калькулятора */
         .display {
             width: 100%;
-            height: 50px;
+            height: 60px;
             background-color: #222;
             color: #fff;
-            font-size: 2em;
             text-align: right;
-            padding: 10px;
+            line-height: 60px;
+            font-size: 32px;
             border-radius: 5px;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-            overflow: hidden;
-            white-space: nowrap;
+            margin-bottom: 20px;
+            padding: 0 10px;
         }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        /* Кнопки */
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
         .button {
-            background-color: #f0f0f0;
-            padding: 20px;
-            font-size: 1.5em;
+            width: 80px;
+            height: 80px;
+            background-color: #f1f1f1;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 24px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .button:hover {
             background-color: #ddd;
         }
 
-        .button:active {
-            background-color: #bbb;
-        }
+        /* Медиазапрос для мобильных устройств */
+        @media (max-width: 600px) {
+            .calculator {
+                padding: 10px;
+            }
 
-        .button.operator {
-            background-color: #f0a500;
-            color: white;
-        }
+            .display {
+                font-size: 28px;
+                height: 50px;
+            }
 
-        .button.operator:hover {
-            background-color: #f08a00;
-        }
-
-        .button.clear {
-            background-color: #ff6666;
-            color: white;
-        }
-
-        .button.clear:hover {
-            background-color: #ff4d4d;
-        }
-
-        .button.equal {
-            background-color: #4CAF50;
-            color: white;
-            grid-column: span 2;
-        }
-
-        .button.equal:hover {
-            background-color: #45a049;
+            .button {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="calculator">
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-        <button class="button clear" onclick="clearDisplay()">C</button>
-        <button class="button operator" onclick="appendCharacter('/')">/</button>
-        <button class="button operator" onclick="appendCharacter('*')">*</button>
-        <button class="button operator" onclick="appendCharacter('-')">-</button>
-
-        <button class="button" onclick="appendCharacter('7')">7</button>
-        <button class="button" onclick="appendCharacter('8')">8</button>
-        <button class="button" onclick="appendCharacter('9')">9</button>
-        <button class="button operator" onclick="appendCharacter('+')">+</button>
-
-        <button class="button" onclick="appendCharacter('4')">4</button>
-        <button class="button" onclick="appendCharacter('5')">5</button>
-        <button class="button" onclick="appendCharacter('6')">6</button>
-        <button class="button equal" onclick="calculateResult()">=</button>
-
-        <button class="button" onclick="appendCharacter('1')">1</button>
-        <button class="button" onclick="appendCharacter('2')">2</button>
-        <button class="button" onclick="appendCharacter('3')">3</button>
-        <button class="button" onclick="appendCharacter('0')">0</button>
-
-        <button class="button" onclick="appendCharacter('.')">.</button>
-        <button class="button backspace" onclick="backspace()">←</button>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="button-row">
+            <button class="button" onclick="appendNumber(7)">7</button>
+            <button class="button" onclick="appendNumber(8)">8</button>
+            <button class="button" onclick="appendNumber(9)">9</button>
+            <button class="button" onclick="setOperator('/')">/</button>
+        </div>
+        <div class="button-row">
+            <button class="button" onclick="appendNumber(4)">4</button>
+            <button class="button" onclick="appendNumber(5)">5</button>
+            <button class="button" onclick="appendNumber(6)">6</button>
+            <button class="button" onclick="setOperator('*')">*</button>
+        </div>
+        <div class="button-row">
+            <button class="button" onclick="appendNumber(1)">1</button>
+            <button class="button" onclick="appendNumber(2)">2</button>
+            <button class="button" onclick="appendNumber(3)">3</button>
+            <button class="button" onclick="setOperator('-')">-</button>
+        </div>
+        <div class="button-row">
+            <button class="button" onclick="appendNumber(0)">0</button>
+            <button class="button" onclick="clearDisplay()">C</button>
+            <button class="button" onclick="calculateResult()">=</button>
+            <button class="button" onclick="setOperator('+')">+</button>
+        </div>
     </div>
-</div>
 
-<script>
-    let display = document.getElementById("display");
+    <script>
+        let currentInput = '';
+        let operator = '';
+        let firstValue = '';
 
-    function appendCharacter(character) {
-        if (display.innerText === "0" && character !== ".") {
-            display.innerText = character;
-        } else {
-            display.innerText += character;
+        function appendNumber(number) {
+            currentInput += number;
+            updateDisplay();
         }
-    }
 
-    function clearDisplay() {
-        display.innerText = "0";
-    }
-
-    function backspace() {
-        if (display.innerText.length === 1 || (display.innerText === "0")) {
-            display.innerText = "0";
-        } else {
-            display.innerText = display.innerText.slice(0, -1);
+        function setOperator(op) {
+            if (currentInput === '') return;
+            if (firstValue !== '') {
+                calculateResult();
+            }
+            operator = op;
+            firstValue = currentInput;
+            currentInput = '';
         }
-    }
 
-    function calculateResult() {
-        try {
-            display.innerText = eval(display.innerText);
-        } catch (e) {
-            display.innerText = "Error";
+        function calculateResult() {
+            if (firstValue === '' || currentInput === '') return;
+            let result;
+            switch (operator) {
+                case '+':
+                    result = parseFloat(firstValue) + parseFloat(currentInput);
+                    break;
+                case '-':
+                    result = parseFloat(firstValue) - parseFloat(currentInput);
+                    break;
+                case '*':
+                    result = parseFloat(firstValue) * parseFloat(currentInput);
+                    break;
+                case '/':
+                    result = parseFloat(firstValue) / parseFloat(currentInput);
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            firstValue = '';
+            operator = '';
+            updateDisplay();
         }
-    }
 
-    // Обработка нажатий клавиш на клавиатуре
-    document.addEventListener('keydown', function(event) {
-        if (event.key >= '0' && event.key <= '9' || event.key === '+' || event.key === '-' || event.key === '*' || event.key === '/' || event.key === '.') {
-            appendCharacter(event.key);
-        } else if (event.key === 'Enter') {
-            calculateResult();
-        } else if (event.key === 'Backspace') {
-            backspace();
-        } else if (event.key === 'c' || event.key === 'C') {
-            clearDisplay();
+        function clearDisplay() {
+            currentInput = '';
+            firstValue = '';
+            operator = '';
+            updateDisplay();
         }
-    });
-</script>
 
+        function updateDisplay() {
+            document.getElementById('display').textContent = currentInput || '0';
+        }
+    </script>
 </body>
 </html>
