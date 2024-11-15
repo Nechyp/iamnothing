@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>Калькулятор</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,9 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 260px;
+            width: 100%;
+            max-width: 300px; /* Максимальная ширина калькулятора */
+            box-sizing: border-box;
         }
 
         .display {
@@ -32,7 +34,6 @@
             text-align: right;
             padding: 10px;
             border-radius: 5px;
-            box-sizing: border-box;
             margin-bottom: 10px;
             overflow: hidden;
             white-space: nowrap;
@@ -88,6 +89,26 @@
 
         .button.equal:hover {
             background-color: #45a049;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media screen and (max-width: 480px) {
+            .display {
+                font-size: 1.5em;
+            }
+
+            .button {
+                padding: 15px;
+                font-size: 1.2em;
+            }
+
+            .button.equal {
+                grid-column: span 4; /* кнопка "=" растягивается на всю ширину */
+            }
+
+            .buttons {
+                grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+            }
         }
     </style>
 </head>
